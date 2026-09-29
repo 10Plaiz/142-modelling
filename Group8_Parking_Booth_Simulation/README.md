@@ -37,12 +37,12 @@ Also note whether any vehicles are already waiting at 07:00; the model assumes n
 ## Results files
 | File | Contents |
 |---|---|
-| `arrival_rates_and_load.csv` | Counts, rates, and ρ per 15-min interval for 1 and 2 booths |
+| `arrival_rates_and_load.csv` | Counts, rates, and ρ per 15-min interval with 1 booth and with 2 booths open |
 | `input_fit_summary.csv` | Chi-square, KS, and AIC for exponential / lognormal / triangular fits |
 | `verification_checks.csv` | 11 checks: hand trace, D/D/1, conservation, sanity, FIFO, Little's law, booth closing, CRN, M/M/1, M/M/2 |
 | `replications_raw.csv` | Every measure for every replication and configuration |
 | `summary_by_config.csv` | Mean, SD, SE, and 95% CI per measure per configuration |
-| `paired_differences.csv` | Paired-t CIs on (1 booth − 2 booths) with the CRN variance reduction |
+| `paired_differences.csv` | Paired-t CIs for three comparisons (1 booth − 2 booths 07–09, 1 booth − 2 booths 07–10, 07–09 − 07–10) with a Bonferroni column and the CRN variance reduction |
 | `spillover_probability.csv` | Monte Carlo estimate of P(a high-traffic day has spillover), Wilson CI |
 | `queue_profile_by_interval.csv` | Mean and 5th/95th-percentile queue length per 15 min |
 | `fluid_step_size.csv` | Euler vs RK4 error at 08:00 for halving step sizes (continuous model) |
@@ -50,5 +50,6 @@ Also note whether any vehicles are already waiting at 07:00; the model assumes n
 | `replication_planning.csv`, `replication_followup.csv` | Week 7 replications-needed calculation and follow-up runs until targets are met |
 | `validation_comparison.csv` | Model prediction bands at the snapshot times (plus observed values once collected) |
 | `extreme_conditions.csv` | Near-zero and ×1.5 traffic face-validity runs |
-| `sensitivity_arrival_service.csv`, `sensitivity_distribution.csv`, `sensitivity_K.csv` | Robustness of the recommendation |
+| `sensitivity_arrival_service.csv`, `sensitivity_distribution.csv`, `sensitivity_K.csv` | Robustness of the recommendation (arrival demand ±20% × processing time ±15%, all three configurations) |
+| `demand_scenarios.csv`, `extra_hour_by_demand.csv` | Low (−20%) / expected / high (+20%) demand for each configuration, and what the 09:00–10:00 extra hour buys at each level |
 | `evidence_summary.csv` | The five kinds of evidence a credible study reports |

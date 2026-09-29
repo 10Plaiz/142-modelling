@@ -1,6 +1,6 @@
 evidence,what to show,this study
-Precision,Mean with 95% CI and n,n = 30 per configuration; paired CI on differences
-Study design,"Type, run length, warm-up, seeds","Terminating, 07:00 to clearance, no warm-up, seeds 1-30, CRN"
+Precision,Mean with 95% CI and n,n = 30 per configuration; paired CIs on three differences (Bonferroni column included)
+Study design,"Type, run length, warm-up, seeds","Terminating, 07:00 to clearance, no warm-up, seeds 1-30, CRN, 3 configurations"
 Verification,Checks run and passed,11/11 (results/verification_checks.csv); continuous fluid-model cross-check of the queue profile (5.5)
 Validation,Comparison with real data,Pending field snapshots
-Sensitivity,Does the advice survive input changes?,Spillover reduced significantly in 15/15 cells; distribution family and K±1 in 8.2-8.3
+Sensitivity,Does the advice survive input changes?,"Arrival demand ±20% × processing time ±15%: 07-09 booth cuts spillover significantly in 15/15 cells, extra hour in 0/15; distribution family and K±1 in 8.2-8.3"
