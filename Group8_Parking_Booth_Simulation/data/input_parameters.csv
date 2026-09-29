@@ -1,0 +1,11 @@
+parameter,value,unit,basis,source
+nonsticker_share,0.05,fraction of arrivals,"ESTIMATED. Share of arriving cars without a parking sticker. The guard refuses them at the stop (or at the pre-check spot when guard 2 is on duty); they turn out of the lane.","Group estimate, carried over from Study B (CSS142P_FinalProject_8)"
+check_mean_sec,4.0,seconds,"ESTIMATED. C: guard looks at the windshield sticker while the car is stopped. Lognormal (positive, right-skewed).","Group estimate from first-hand experience of the gate"
+check_sd_sec,2.0,seconds,ESTIMATED. Spread of C.,Group estimate
+tap_mean_sec,4.0,seconds,"ESTIMATED. T: driver reaches out, taps the University ID at the reader, the reader accepts and the barrier lifts. Card/RFID reads themselves take about 1-3 s; reaching out of the window and the barrier cycle add to that.","Group estimate; card/RFID transaction range from barriergatesystems.com/technology/rfid-vs-lpr-vs-ticket-access-control/"
+tap_sd_sec,2.0,seconds,ESTIMATED. Spread of T.,Group estimate
+moveup_mean_sec,3.0,seconds,"ESTIMATED. M: the car clears the barrier and the next car pulls up to the stop. Included in every service (conservative).",Group estimate
+moveup_sd_sec,1.0,seconds,ESTIMATED. Spread of M.,Group estimate
+refusal_mean_sec,45.0,seconds,"ESTIMATED. R: guard explains the refusal and the car turns out of the lane. Occupies the guard and the position the car is in.","Group estimate, carried over from Study B"
+refusal_sd_sec,15.0,seconds,ESTIMATED. Spread of R.,"Group estimate, carried over from Study B"
+K_waiting_spaces,8,vehicles,"ESTIMATED. Cars that fit on the approach, not counting the car at the stop, before the tail reaches Pablo Ocampo Sr. Extension. Replace with a Google Maps / Street View measurement: approach length / (car length + gap).","Group estimate, carried over from Study B"
