@@ -16,7 +16,7 @@ Model classification
     Stochastic    - interarrival and processing times are random.
     Discrete      - queue length and booth status change only at events
                     (arrival, processing start, processing completion,
-                    second-booth closing at 09:00).
+                    second-booth closing at 09:00 or 10:00).
     Terminating   - one operating day with a natural start (07:00) and end
                     (19:00 arrivals stop, queue is cleared), so no warm-up.
 """
@@ -38,6 +38,7 @@ INTERVAL = 15.0          # minutes per arrival-rate interval
 N_INTERVALS = 48         # 07:00-19:00
 DAY_LENGTH = 720.0       # minutes, 07:00-19:00
 PEAK_END = 120.0         # 09:00
+EXTENDED_END = 180.0     # 10:00
 OPEN_CLOCK = 7 * 60      # 07:00 in minutes after midnight
 
 
@@ -68,7 +69,14 @@ class Config:
 ONE_BOOTH = Config("1 booth all day", base_booths=1, extra_booths=0)
 TWO_BOOTH_PEAK = Config("2 booths 07:00-09:00", base_booths=1, extra_booths=1,
                         extra_close=PEAK_END)
-CONFIGS = [ONE_BOOTH, TWO_BOOTH_PEAK]
+TWO_BOOTH_EXTENDED = Config("2 booths 07:00-10:00", base_booths=1, extra_booths=1,
+                            extra_close=EXTENDED_END)
+CONFIGS = [ONE_BOOTH, TWO_BOOTH_PEAK, TWO_BOOTH_EXTENDED]
+
+# Paired comparisons (A - B) reported for the decision: does a second booth
+# help at all, and does keeping it open one more hour add anything?
+COMPARISONS = [(ONE_BOOTH, TWO_BOOTH_PEAK), (ONE_BOOTH, TWO_BOOTH_EXTENDED),
+               (TWO_BOOTH_PEAK, TWO_BOOTH_EXTENDED)]
 
 
 # --------------------------------------------------------------------------
