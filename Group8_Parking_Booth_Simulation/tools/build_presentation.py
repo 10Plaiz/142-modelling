@@ -135,7 +135,7 @@ def build_documents(summary, paired, probabilities, checks, parameters, extremes
         ("Should a second guard work during the morning?", ["Compare one guard all day, plus a second guard until 09:00, or plus a second guard until 10:00.",
           "Test 20% fewer arrivals, normal demand, and 20% more arrivals. The aim is to measure the staffing benefit under stated assumptions.",
           "The submitted proposal described independent booths and planned field measurements. This revision uses guards sharing one reader and estimated inputs."]),
-        ("Inputs are estimates, not field measurements", ["Expected arrivals: about 402 cars/day, peaking at 100 cars/hour. Sticker check: 4 seconds; ID tap and barrier: 4 seconds; move-up: 3 seconds.",
+        ("Inputs are estimates, not field measurements", ["Expected arrivals: about 100 cars/day, peaking at 25 cars/hour. Sticker check: 4 seconds; ID tap and barrier: 4 seconds; move-up: 3 seconds.",
           "An estimated 5% of cars have no sticker. Refusal averages 45 seconds. The spillover threshold is 8 cars on the approach.",
           "All values and their basis remain in the input CSVs. The arrival and activity distributions are assumptions; no campus fit was performed."]),
         ("How we checked the program", [f"{passed} recorded checks passed, including hand-calculated examples, car accounting, arrival order, closing rules, and one-reader limits.",
@@ -172,7 +172,7 @@ def build_documents(summary, paired, probabilities, checks, parameters, extremes
             "This report is a study under explicit assumptions. It does not establish that the revised scope was accepted by the instructor."])
         save_report("Problem, boundary, and inputs", ["The decision is which of three guard schedules to use under the assumed entrance arrangement. A has 12 scheduled guard-hours, B has 14, and C has 15.",
             "Each operating day starts empty at 07:00. Arrivals stop at 19:00 and remaining cars are processed. The model excludes parking-space limits, exit traffic, abandonment, and reader failures.",
-            "Inputs are documented group estimates: approximately 402 arrivals/day, a 100/hour peak, activity means of 4 seconds checking, 4 seconds tapping and barrier operation, 3 seconds moving, and 45 seconds refusal. Activity standard deviations are 2, 2, 1, and 15 seconds. The no-sticker share is 5%; K is 8.",
+            "Inputs are documented group estimates: approximately 100 arrivals/day, a 25/hour peak, activity means of 4 seconds checking, 4 seconds tapping and barrier operation, 3 seconds moving, and 45 seconds refusal. Activity standard deviations are 2, 2, 1, and 15 seconds. The no-sticker share is 5%; K is 8.",
             "Lognormal activity parameters come from those means and standard deviations. Arrivals use a piecewise-constant Poisson process. Neither assumption is a fit to campus observations.",
             "The revised model replaces independent booths with one stop and a pre-check position. The supplied progress report is the basis for this choice; the physical arrangement remains unconfirmed."])
         fig = draw_entrance(); pdf.savefig(fig); plt.close(fig)

@@ -6,7 +6,7 @@ V11 two-station trace B: 2nd guard 07-09,"[5, 8, 11]","[5.0, 8.0, 11.0]",True
 V12 guard closed at opening,same departures as A,0.0,True
 V12 zero check and no refusals,same departures,0.0,True
 Empty-input case,"zero cars, delay, queue, spillover",0,True
-V8 reproducible streams across demand,same types and activities for common car indices,305,True
+V8 reproducible streams across demand,same types and activities for common car indices,77,True
 V8 seed reproducibility,identical inputs,compared arrays,True
 Invalid negative arrival rate,clear input error,Arrival rates must be finite and nonnegative,True
 Invalid missing arrival slot,clear input error,Arrival inputs must contain all 48 ordered 15-minute slots from 07:00 to 18:45,True
@@ -25,7 +25,7 @@ V13 one-reader holding-time bound,true in all final study runs,270 runs,True
 Activity-test precision,all stated targets met,30,True
 Activity scaling 0.8,same arrivals and types; scaled activities,0.8,True
 Activity scaling 1.2,same arrivals and types; scaled activities,1.2,True
-Extreme low demand,less mean delay than normal,-2.992490514645378e-13,True
-Extreme five times demand,higher delay and maximum queue than normal,1464.8009549813,True
-Extreme slow reader,higher delay and maximum queue than normal,412.27639253196674,True
+Extreme low demand,less mean delay than normal,-4.767020111984266e-14,True
+Extreme five times demand,higher delay and maximum queue than normal,3.4452076067712283,True
+Extreme slow reader,higher delay and maximum queue than normal,6.565313896752441,True
 Input provenance,input CSVs unchanged,SHA-256 hashes match,True

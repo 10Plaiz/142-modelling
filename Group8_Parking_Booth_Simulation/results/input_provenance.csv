@@ -1,5 +1,5 @@
 input,status,basis
-Arrival profile,estimated,Study B group estimate; interval-rate derivation unavailable
+Arrival profile,estimated,"Group estimate: under 100 slots, low turnover; about 100 entries/day (earlier shape scaled by 0.25)"
 Activity moments,estimated,Parameter CSV; no stopwatch samples
 No-sticker share and K,estimated,Parameter CSV; no measured share or approach capacity
 Entrance layout,assumed,PR #2 revision; full layout not confirmed
