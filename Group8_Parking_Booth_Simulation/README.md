@@ -10,6 +10,17 @@ arrangement are model assumptions. This revises the submitted independent-booth
 proposal. Results are conditional on those assumptions; field validation and
 instructor acceptance of the revision are not established.
 
+## Run in Google Colab (no installation)
+
+1. Open [Google Colab](https://colab.research.google.com), choose **File → Open notebook → GitHub**, and paste
+   `https://github.com/10Plaiz/142-modelling`.
+2. Select `Group8_Parking_Booth_Simulation/Parking_Booth_Simulation.ipynb`.
+3. Choose **Runtime → Run all**. It takes about a minute.
+
+The notebook's first code cell runs only in Colab. It clones this repository to get the model code, inputs,
+and tools, then installs SimPy 4.1.2. Colab's own versions of NumPy, pandas, SciPy, and Matplotlib are used,
+so the locked local environment below remains the reference setup.
+
 ## Set up and run
 
 Install [uv](https://docs.astral.sh/uv/getting-started/installation/) and Python
@@ -46,7 +57,7 @@ Choose the project's Python 3.12 environment. In VS Code, select
 `.venv/bin/python` on Linux or `.venv\\Scripts\\python.exe` on Windows.
 Use Restart Kernel and Run All Cells. The notebook runs from its own folder.
 It produces `results/` and `figures/` and reads inputs without
-rewriting them. No automatic package install or public-data download occurs.
+rewriting them. Outside Colab, no automatic package install or public-data download occurs.
 
 For the 30-day normal-demand CLI baseline:
 
@@ -78,6 +89,8 @@ The CLI is a smaller experiment. It does not replace full notebook verification.
 | `results/input_provenance.csv` | Known input origins and missing justification. |
 | `results/demand_scenarios.csv` | The required demand comparison, keeping other inputs fixed. |
 | `results/extreme_conditions.csv` | Additional low-demand, high-demand, and slow-reader cases. |
+| `results/headroom_sweep.csv` | Demand from 1x to 5x for schedules A and B: spillover, maximum queue, morning delay, and spillover-day probability, with intervals. Locates when one guard stops being enough. |
+| `results/recommendation.md` | The computed recommendation: decision rule, evidence, when it would change, and limits. |
 | `presentation/Parking_Study_Report.pdf` | Study report in PDF format. |
 | `presentation/Parking_Study_Presentation.pdf` | Presentation of the study question, method, evidence, and limitations. |
 | `presentation/talk-track.md` | Speaker notes and explanations of the study. |
@@ -88,7 +101,7 @@ The CLI is a smaller experiment. It does not replace full notebook verification.
 
 The notebook also saves a conceptual-model diagram, arrival profile, queue
 profile, normal-demand comparison, and demand-sensitivity figure. It also saves
-morning and activity-time comparison figures.
+morning and activity-time comparison figures, and the headroom sweep figure.
 
 ## Interpretation
 
@@ -110,5 +123,5 @@ code but are outside the notebook's evidence.
 
 The uv lockfile records tested packages. Keep `.venv` out of Git. Recreate the
 environment on another machine rather than copying it. The local workflow is
-the tested reproduction path; a Colab session needs its own dependencies and
-the notebook's working folder before running.
+the reference reproduction path. In Colab, the notebook's first cell fetches the
+project files and installs SimPy itself.
