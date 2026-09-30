@@ -1,0 +1,41 @@
+flowchart LR
+    %% Styling and High-Contrast Theme
+    classDef inputStyle fill:#E1F5FE,stroke:#0288D1,stroke-width:2px,color:#01579B
+    classDef simStyle fill:#FFF3E0,stroke:#F57C00,stroke-width:2px,color:#E65100
+    classDef metricStyle fill:#E8F5E9,stroke:#388E3C,stroke-width:2px,color:#1B5E20
+    classDef decisionStyle fill:#F3E5F5,stroke:#7B1FA2,stroke-width:2px,color:#4A148C
+
+    subgraph PHASE1 ["1. Inputs and Parameters"]
+        IN1["📊 Piecewise Arrival Profile<br/>Time-varying rates λ(t) in 15-min intervals"]:::inputStyle
+        IN2["⏱️ Stochastic Service Model<br/>Lognormal activity times: C, T, M, R<br/>Bernoulli sticker compliance status"]:::inputStyle
+    end
+
+    subgraph PHASE2 ["2. Simulation & Experiment Design"]
+        GRID["🔄 Staffing Schedules & Sensitivity<br/>• Sched A: 1 Guard all day (12h)<br/>• Sched B: +Guard 2 peak (07:00-09:00, 14h)<br/>• Sched C: +Guard 2 extended (07:00-10:00, 15h)<br/>• Sensitivity: Demand (±20%) & Service Times"]:::simStyle
+        SEED["🎲 Variance Reduction (CRN)<br/>Independent daily seeds shared across<br/>schedules for matched-pair comparison"]:::simStyle
+    end
+
+    subgraph PHASE3 ["3. Measured Performance Indicators"]
+        OUT1["⏳ Average Total Delay<br/>(Wait time excluding own service)"]:::metricStyle
+        OUT2["🚗 Peak Approach Queue<br/>(Includes pre-check, excludes stop)"]:::metricStyle
+        OUT3["🛡️ Guard Utilization<br/>(Fraction of time active in service)"]:::metricStyle
+        OUT4["⚠️ Spillover Duration<br/>(Time queue exceeds threshold K)"]:::metricStyle
+    end
+
+    subgraph PHASE4 ["4. Statistical Evaluation & Decision"]
+        EVAL["⚖️ Inferential Statistics<br/>• Paired differences (B - A, C - A, C - B)<br/>• Bonferroni-adjusted 95% CIs<br/>• Precision and verification gates"]:::decisionStyle
+        DECISION["🎯 Management Decision Analysis<br/>• Tradeoff: Delay reduction vs added guard-hours<br/>• Identify point of diminishing marginal returns<br/>• Evaluate shared-reader bottleneck constraint"]:::decisionStyle
+    end
+
+    IN1 -->|generates arrival events| GRID
+    IN2 -->|samples activity durations| GRID
+    SEED -->|synchronizes random streams| GRID
+    GRID -->|logs simulation trajectories| OUT1
+    GRID -->|logs simulation trajectories| OUT2
+    GRID -->|logs simulation trajectories| OUT3
+    GRID -->|logs simulation trajectories| OUT4
+    OUT1 --> EVAL
+    OUT2 --> EVAL
+    OUT3 --> EVAL
+    OUT4 --> EVAL
+    EVAL -->|informs staffing policy| DECISION

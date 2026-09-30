@@ -1,0 +1,65 @@
+flowchart LR
+    %% Styling and High-Contrast Accessibility Theme
+    classDef terminal fill:#ECEFF1,stroke:#37474F,stroke-width:2px,color:#263238
+    classDef queue fill:#E1F5FE,stroke:#0288D1,stroke-width:2px,color:#01579B
+    classDef decision fill:#FFF8E1,stroke:#FFA000,stroke-width:2px,color:#E65100
+    classDef guard2 fill:#EDE7F6,stroke:#512DA8,stroke-width:2px,color:#311B92
+    classDef guard1 fill:#E8EAF6,stroke:#283593,stroke-width:2px,color:#1A237E
+    classDef reader fill:#E8F5E9,stroke:#2E7D32,stroke-width:2px,color:#1B5E20
+    classDef reject fill:#FFEBEE,stroke:#C62828,stroke-width:2px,color:#B71C1C
+
+    %% Entry & Queue
+    ARRIVE(["🚗 Vehicle Arrival Stream<br/>Non-homogeneous Poisson λ(t)"]):::terminal
+    QUEUE["🛣️ Approach Lane Queue<br/>Monitored for spillover Queue >= K"]:::queue
+
+    %% Dispatch Decision
+    CHECK_PRECHECK{"Can Guard 2 Pre-Check?<br/>Guard 2 active and Stop occupied"}:::decision
+
+    %% Pre-check Subsystem
+    subgraph PRECHECK_ZONE ["Pre-Check Position (1 Car-Length Upstream)"]
+        G2_INSPECT["🛡️ Guard 2 inspects sticker<br/>Duration: C ~ Lognormal"]:::guard2
+        G2_DECIDE{"Valid sticker?<br/>Bernoulli (1 - p)"}:::decision
+        G2_WAIT["✋ Holds pre-check spot<br/>Blocks upstream approach lane"]:::queue
+        REFUSE_G2["🚫 Refuse entry and turn out<br/>Duration: R ~ Lognormal"]:::reject
+    end
+
+    %% Main Stop Subsystem
+    subgraph STOP_ZONE ["ONE Shared ID Reader Barrier (Single Service Stop)"]
+        ACQUIRE_STOP["🚦 Acquires Entrance Stop<br/>Vehicle leaves approach queue"]:::queue
+
+        G1_INSPECT["🛡️ Guard 1 inspects sticker<br/>Duration: C ~ Lognormal"]:::guard1
+        G1_DECIDE{"Valid sticker?<br/>Bernoulli (1 - p)"}:::decision
+        REFUSE_G1["🚫 Refuse entry and turn out<br/>Duration: R ~ Lognormal"]:::reject
+
+        ID_TAP["💳 Taps ID at reader and barrier lifts<br/>Duration: T + M ~ Lognormal"]:::reader
+    end
+
+    %% Terminations
+    EXIT_LOT(["🏁 Enters Campus Parking Lot"]):::terminal
+    EXIT_REFUSED(["↩️ Leaves Campus (Refused)"]):::terminal
+
+    %% Connections with ASD-STE100 Active Verbs
+    ARRIVE -->|joins approach queue| QUEUE
+    QUEUE -->|advances toward gate| CHECK_PRECHECK
+
+    %% Pre-check Branch
+    CHECK_PRECHECK -->|diverts to pre-check, peak traffic busy stop| G2_INSPECT
+    G2_INSPECT -->|evaluates sticker status| G2_DECIDE
+    G2_DECIDE -->|unauthorized vehicle| REFUSE_G2
+    G2_DECIDE -->|verified vehicle| G2_WAIT
+    G2_WAIT -->|moves into free stop| ACQUIRE_STOP
+    REFUSE_G2 -->|vacates lane| EXIT_REFUSED
+
+    %% Direct to Stop Branch
+    CHECK_PRECHECK -->|proceeds directly, stop free or off-peak| ACQUIRE_STOP
+
+    %% Stop Processing
+    ACQUIRE_STOP -->|requires inspection| G1_INSPECT
+    ACQUIRE_STOP -->|pre-check already completed| ID_TAP
+
+    G1_INSPECT -->|evaluates sticker status| G1_DECIDE
+    G1_DECIDE -->|unauthorized vehicle| REFUSE_G1
+    G1_DECIDE -->|verified vehicle| ID_TAP
+    REFUSE_G1 -->|vacates gate| EXIT_REFUSED
+
+    ID_TAP -->|clears barrier arm| EXIT_LOT
