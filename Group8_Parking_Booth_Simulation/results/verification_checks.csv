@@ -1,12 +1,31 @@
 check,expected,observed,pass
-V1 hand trace: delays,"[0, 0, 1, 2]","[0.0, 0.0, 1.0, 2.0]",True
-V1 hand trace: Wq and utilization,"Wq=0.75, util=10/13=0.769","Wq=0.75, util=0.769",True
-V2 deterministic D/D/1 (Week 2): no wait,0.0,0.0,True
-V3 conservation at 19:00: arrived = finished + waiting + in service (all 90 runs),equal,equal,True
-"V4 sanity: waits >= 0, queue >= 0, utilization in [0,1]",true,True,True
-V5 FIFO: service starts in arrival order,true,True,True
-V6 Little's law identity: queue-length area = sum of delays,equal,True,True
-V7 second booth starts no vehicle after its closing time (09:00 or 10:00),0 starts,0 starts,True
-V8 common random numbers: all configs see identical arrivals and processing times,identical,True,True
-"V9 known answer M/M/1 (lambda=0.8, E[S]=1.0): Wq",4.000 (theory),"3.981 [3.838, 4.124]",True
-"V9 known answer M/M/2 (lambda=1.6, E[S]=1.0): Wq",1.778 (theory),"1.762 [1.720, 1.803]",True
+V1 hand trace,"[0, 0, 1, 2]; mean 0.75; busy fraction 10/13","[0.0, 0.0, 1.0, 2.0]",True
+V2 deterministic no waiting,0,1.9984014443252818e-15,True
+V11 two-station trace A: 1 guard,"[5, 10, 15]","[5.0, 10.0, 15.0]",True
+V11 two-station trace B: 2nd guard 07-09,"[5, 8, 11]","[5.0, 8.0, 11.0]",True
+V12 guard closed at opening,same departures as A,0.0,True
+V12 zero check and no refusals,same departures,0.0,True
+Empty-input case,"zero cars, delay, queue, spillover",0,True
+V8 reproducible streams across demand,same types and activities for common car indices,305,True
+V8 seed reproducibility,identical inputs,compared arrays,True
+Invalid negative arrival rate,clear input error,Arrival rates must be finite and nonnegative,True
+Invalid missing arrival slot,clear input error,Arrival inputs must contain all 48 ordered 15-minute slots from 07:00 to 18:45,True
+Invalid sticker probability,clear input error,The no-sticker share must be between zero and one,True
+Invalid fractional spillover threshold,clear input error,The spillover threshold must be a positive integer,True
+V9 M/M/1 known answer,4.000000 min; tolerance 0.244876,3.8457319552760305,True
+V9 M/G/1 known answer,0.384367 min; tolerance 0.019218,0.3855090081001499,True
+V3 vehicle conservation at 19:00,true in all final study runs,270 runs,True
+V4 sanity and completed processing,true in all final study runs,270 runs,True
+V5 FIFO arrival order at stop,true in all final study runs,270 runs,True
+V6 queue-area identity,true in all final study runs,270 runs,True
+V7 guard-2 closing rule,true in all final study runs,270 runs,True
+V8 identical cars across schedules,true in all final study runs,270 runs,True
+V10 per-car Lindley recursion,true in all final study runs,270 runs,True
+V13 one-reader holding-time bound,true in all final study runs,270 runs,True
+Activity-test precision,all stated targets met,30,True
+Activity scaling 0.8,same arrivals and types; scaled activities,0.8,True
+Activity scaling 1.2,same arrivals and types; scaled activities,1.2,True
+Extreme low demand,less mean delay than normal,-2.992490514645378e-13,True
+Extreme five times demand,higher delay and maximum queue than normal,1464.8009549813,True
+Extreme slow reader,higher delay and maximum queue than normal,412.27639253196674,True
+Input provenance,input CSVs unchanged,SHA-256 hashes match,True
