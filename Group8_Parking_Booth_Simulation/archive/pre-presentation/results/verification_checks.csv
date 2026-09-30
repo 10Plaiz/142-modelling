@@ -1,0 +1,12 @@
+check,expected,observed,pass
+V1 hand trace: delays,"[0, 0, 1, 2]","[0.0, 0.0, 1.0, 2.0]",True
+V1 hand trace: Wq and utilization,"Wq=0.75, util=10/13=0.769","Wq=0.75, util=0.769",True
+V2 deterministic D/D/1 (Week 2): no wait,0.0,0.0,True
+V3 conservation at 19:00: arrived = finished + waiting + in service (all 90 runs),equal,equal,True
+"V4 sanity: waits >= 0, queue >= 0, utilization in [0,1]",true,True,True
+V5 FIFO: service starts in arrival order,true,True,True
+V6 Little's law identity: queue-length area = sum of delays,equal,True,True
+V7 second booth starts no vehicle after its closing time (09:00 or 10:00),0 starts,0 starts,True
+V8 common random numbers: all configs see identical arrivals and processing times,identical,True,True
+"V9 known answer M/M/1 (lambda=0.8, E[S]=1.0): Wq",4.000 (theory),"3.981 [3.838, 4.124]",True
+"V9 known answer M/M/2 (lambda=1.6, E[S]=1.0): Wq",1.778 (theory),"1.762 [1.720, 1.803]",True

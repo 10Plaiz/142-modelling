@@ -1,0 +1,25 @@
+quantity,mean,half_width,target_half_width,reps_needed,30_is_enough
+avg_wait_min | 1 booth all day,2.720262761545377,0.40008814590648295,0.25,77,False
+avg_wait_min | 2 booths 07:00-09:00,0.11252409688389158,0.010829673738873814,0.25,1,True
+avg_wait_min | 2 booths 07:00-10:00,0.0985010313141333,0.010788449480107598,0.25,1,True
+avg_wait_min | paired difference 1 booth all day - 2 booths 07:00-09:00,2.6077386646614857,0.39907414039182093,0.25,77,False
+avg_wait_min | paired difference 1 booth all day - 2 booths 07:00-10:00,2.621761730231243,0.398712776480046,0.25,77,False
+avg_wait_min | paired difference 2 booths 07:00-09:00 - 2 booths 07:00-10:00,0.014023065569758285,0.0035533560266387335,0.25,1,True
+spillover_min | 1 booth all day,71.18920854864135,6.353368566008692,5.0,49,False
+spillover_min | 2 booths 07:00-09:00,0.3338527433965358,0.3025968168968349,5.0,1,True
+spillover_min | 2 booths 07:00-10:00,0.3305568044343848,0.3029940564674326,5.0,1,True
+spillover_min | paired difference 1 booth all day - 2 booths 07:00-09:00,70.85535580524483,6.350414139558384,5.0,49,False
+spillover_min | paired difference 1 booth all day - 2 booths 07:00-10:00,70.85865174420697,6.350875348763384,5.0,49,False
+spillover_min | paired difference 2 booths 07:00-09:00 - 2 booths 07:00-10:00,0.0032959389621510125,0.006740952064051349,5.0,1,True
+max_queue_veh | 1 booth all day,26.8,2.6025981912920053,2.0,51,False
+max_queue_veh | 2 booths 07:00-09:00,4.633333333333334,0.41002427454642554,2.0,2,True
+max_queue_veh | 2 booths 07:00-10:00,4.633333333333334,0.41002427454642554,2.0,2,True
+max_queue_veh | paired difference 1 booth all day - 2 booths 07:00-09:00,22.166666666666668,2.6020131197838814,2.0,51,False
+max_queue_veh | paired difference 1 booth all day - 2 booths 07:00-10:00,22.166666666666668,2.6020131197838814,2.0,51,False
+max_queue_veh | paired difference 2 booths 07:00-09:00 - 2 booths 07:00-10:00,0.0,0.0,2.0,30,True
+utilization | 1 booth all day,0.30810058965142145,0.006659068842102645,0.02,4,True
+utilization | 2 booths 07:00-09:00,0.26406145099122164,0.005705252544019041,0.02,3,True
+utilization | 2 booths 07:00-10:00,0.24644969400819478,0.005319064635518282,0.02,3,True
+utilization | paired difference 1 booth all day - 2 booths 07:00-09:00,0.04403913866019973,0.0009540400236925909,0.02,1,True
+utilization | paired difference 1 booth all day - 2 booths 07:00-10:00,0.06165089564322661,0.0013402758654178072,0.02,1,True
+utilization | paired difference 2 booths 07:00-09:00 - 2 booths 07:00-10:00,0.017611756983026885,0.00038726435253939336,0.02,1,True
