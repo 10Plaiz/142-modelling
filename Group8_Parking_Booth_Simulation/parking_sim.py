@@ -7,7 +7,7 @@ Makati campus parking lot.
 CSS142P Modelling and Simulation - Group 8
 (Ariola, Bauza, Caliliw, Jimenez)
 
-The gate. A car stops at one position. The guard checks its parking sticker,
+Assumed gate. A car stops at one position. The guard checks its parking sticker,
 then the driver taps a University ID at the one reader and the barrier lifts.
 Cars without a sticker (about 5%) are refused there and turn out of the lane.
 A second guard can be posted one car-length upstream to pre-check stickers
@@ -162,8 +162,22 @@ def load_inputs(data_dir="data", family="lognormal"):
     data_dir = Path(data_dir)
     arr = pd.read_csv(data_dir / "arrival_rates.csv")
     rates = arr["arrivals_per_hour"].to_numpy(float) / 60.0
+    expected_slots = [min_to_clock(i * INTERVAL) for i in range(48)]
+    if arr["interval_start"].tolist() != expected_slots:
+        raise ValueError("Arrival inputs must contain all 48 ordered 15-minute slots from 07:00 to 18:45")
+    if not np.isfinite(rates).all() or (rates < 0).any():
+        raise ValueError("Arrival rates must be finite and nonnegative")
     params = pd.read_csv(data_dir / "input_parameters.csv")
     p = params.set_index("parameter")["value"].astype(float)
+    if params["parameter"].duplicated().any() or not np.isfinite(p).all():
+        raise ValueError("Input parameters must be unique and finite")
+    for activity in ACTIVITIES:
+        if p[f"{activity}_mean_sec"] <= 0 or p[f"{activity}_sd_sec"] <= 0:
+            raise ValueError("Activity means and standard deviations must be positive")
+    if not 0 <= p["nonsticker_share"] <= 1:
+        raise ValueError("The no-sticker share must be between zero and one")
+    if p["K_waiting_spaces"] < 1 or not p["K_waiting_spaces"].is_integer():
+        raise ValueError("The spillover threshold must be a positive integer")
     dists = {a: make_dist(family, p[f"{a}_mean_sec"] / 60, p[f"{a}_sd_sec"] / 60) for a in ACTIVITIES}
     model = ActivityModel(dists, float(p["nonsticker_share"]))
     return rates, params, int(p["K_waiting_spaces"]), model
@@ -389,6 +403,7 @@ def day_metrics(res: DayResult, K: int) -> dict:
     """Delay = time in system minus the car's own activity time: always an
     output of the model, never sampled."""
     delay = (res.depart - res.arrival) - res.activity
+    initial_wait = res.check_start - res.arrival
     n = len(delay)
     t_end = float(np.nanmax(res.depart)) if n else DAY_LENGTH
     t0, t1, q = _segments(res)
@@ -406,6 +421,7 @@ def day_metrics(res: DayResult, K: int) -> dict:
     return {
         # proposal measures
         "avg_delay_sec": float(delay.mean()) * 60 if n else 0.0,
+        "avg_initial_wait_sec": float(initial_wait.mean()) * 60 if n else 0.0,
         "max_queue_veh": int(q.max()),
         "guard_utilization": guard_busy / sum(on_duty.values()),
         "spillover_min": spill,
@@ -417,6 +433,7 @@ def day_metrics(res: DayResult, K: int) -> dict:
         "stop_occupancy": stop_busy / max(DAY_LENGTH, t_end),
         "spillover_morning_min": queue_time_above(res, K, (0.0, MORNING_END)),
         "guard_hours": cfg.guard_hours,
+        "effective_guard_hours": sum(on_duty.values()) / 60,
         "n_vehicles": n,
         "n_refused": int(res.nonsticker.sum()),
         "time_avg_queue_Lq": area / max(DAY_LENGTH, t_end),
@@ -645,4 +662,4 @@ if __name__ == "__main__":
         for col in ["avg_delay_sec", "max_queue_veh", "guard_utilization", "spillover_min"]:
             c = ci_mean(sub[col])
             print(f"  {col:<18} {c['mean']:8.3f}  95% CI [{c['ci_low']:.3f}, {c['ci_high']:.3f}]")
-    print("\nFull study (verification, validation, sensitivity, stress test): Parking_Booth_Simulation.ipynb")
+    print("\nFull study, model checks and demand sensitivity: Parking_Booth_Simulation.ipynb")

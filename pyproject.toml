@@ -1,0 +1,20 @@
+[project]
+name = "group8-parking-study"
+version = "0.1.0"
+description = "Reproducible CSS142P parking entrance simulation and notebook"
+requires-python = ">=3.12,<3.13"
+dependencies = [
+    "simpy==4.1.2",
+    "numpy==2.5.0",
+    "scipy==1.18.0",
+    "pandas==3.0.3",
+    "matplotlib==3.11.2",
+    "nbformat>=5.10,<6",
+    "nbclient>=0.10,<1",
+    "nbconvert>=7.16,<8",
+    "ipykernel>=6.29,<8",
+    "jupyterlab>=4.4,<5",
+]
+
+[tool.uv]
+package = false
