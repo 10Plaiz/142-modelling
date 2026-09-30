@@ -1,69 +1,114 @@
-# Parking Entrance: Discrete-Event Simulation
-CSS142P Modelling and Simulation · Group 8 · Mapúa University
+# Parking entrance staffing study
 
-**The gate.** A car stops at one position. The guard checks its parking sticker, then the driver taps a University ID at the **one** reader and the barrier lifts. Cars without a sticker are refused and turn out of the lane.
+CSS142P Modelling and Simulation | Group 8 | Mapúa University
 
-**The question.** On a high-traffic day, is one guard enough? How much can traffic grow before the line reaches Pablo Ocampo Sr. Extension? Is a second guard (07:00–09:00 or 07:00–10:00) worth its guard-hours? The second guard shares the one reader, so it can only pre-check stickers upstream.
+Compare one guard all day, a second guard 07:00 to 09:00, and a second guard
+07:00 to 10:00. Each schedule is tested with 80%, 100%, and 120% arrival demand.
 
-> **All campus inputs are estimates.** The group has no access to the gate or its records. Every value, with its basis and source, is in `data/input_parameters.csv`. Real public data (SFpark) is used only to test the form of the arrival process, never campus volumes.
+All campus inputs are estimates. The shared ID reader and advance sticker-check
+arrangement are model assumptions. This revises the submitted independent-booth
+proposal. Results are conditional on those assumptions; field validation and
+instructor acceptance of the revision are not established.
 
-## Run it
-```bash
-pip install simpy numpy scipy pandas matplotlib jupyter
-jupyter notebook Parking_Booth_Simulation.ipynb    # then Kernel > Restart & Run All (a few minutes)
-python parking_sim.py                              # quick 30-replication baseline, no notebook
-```
-**Google Colab:** clone the repository, `%cd` into `Group8_Parking_Booth_Simulation`, open the notebook and choose *Run all*. The first cell installs SimPy if it is missing. The notebook never creates or rewrites input files.
+## Set up and run
 
-Tested with Python 3.12 and SimPy 4.1.2; the code also runs on Python 3.10+.
-
-## Files
-| Path | What it is |
-|---|---|
-| `Parking_Booth_Simulation.ipynb` | The full study: input modelling (incl. the real-data arrival test) → conceptual model → verification → experiment design → replication planning → results → stress test and fluid cross-check → validation → sensitivity → result statement |
-| `parking_sim.py` | The model: input loading, arrival generation, common random numbers, the SimPy entrance model, measures, experiment driver, output-analysis helpers, arrival-assumption tests, the fluid-flow cross-check (Euler / RK4) |
-| `data/input_parameters.csv` | Every activity-time estimate, the no-sticker share and K, each with its `basis` and `source`. **The single source of truth.** Edit values here; no code changes are needed. |
-| `data/arrival_rates.csv` | Estimated arrivals per hour for each 15-minute interval, 07:00–19:00 |
-| `data/proxy_sfpark_entries.csv` | Real per-vehicle entry times (one San Francisco garage, weekdays 07:00–19:00), used only to test the arrival assumption |
-| `tools/build_arrival_proxy.py` | Rebuilds the proxy file from the public SFpark data (about 812 MB). Not part of the model. |
-| `results/` | Every table the notebook produces, as CSV |
-| `figures/` | Every figure the notebook produces, as PNG, including the conceptual model diagram |
-
-## Inputs
-| Input | Estimate | Basis |
-|---|---|---|
-| Arrivals | about 214 cars 07:00–10:00, peak 100 cars/hour, about 402 a day | Group estimate |
-| Sticker check C | lognormal, mean 4 s, SD 2 s | Group estimate |
-| ID tap + barrier T | lognormal, mean 4 s, SD 2 s | Group estimate; card/RFID reads take about 1–3 s |
-| Move-up M | lognormal, mean 3 s, SD 1 s | Estimate |
-| Refusal R | lognormal, mean 45 s, SD 15 s | Estimate |
-| No-sticker share | 5% | Estimate |
-| K | 8 cars | Estimate. **Measure it on Google Maps / Street View:** approach length ÷ (car length + gap). |
-
-**Rebuilding the arrival proxy:**
+Install [uv](https://docs.astral.sh/uv/getting-started/installation/) and Python
+3.12. Run these commands from the repository root:
 
 ```bash
-python tools/build_arrival_proxy.py --survey      # entries per garage
-python tools/build_arrival_proxy.py               # streams the file from the SFMTA
+uv sync --locked
+uv run --locked python Group8_Parking_Booth_Simulation/tools/verify_notebook.py --doctor
+uv run --locked python Group8_Parking_Booth_Simulation/tools/verify_notebook.py
 ```
 
-Add `--source path/to/downloaded.csv` to either command to use a downloaded copy. Source: [SFpark evaluation data, SFMTA](https://www.sfmta.com/getting-around/drive-park/demand-responsive-pricing/sfpark-evaluation).
+The verifier executes the real notebook in a fresh kernel and isolated working
+directory. It checks all nine main combinations, morning statistics, initial
+waiting, and a separate activity-time test. It recalculates exported intervals
+from raw daily results and verifies unchanged inputs. Evidence survives cleanup
+under `artifacts/notebook-verification/`.
 
-## Results files
-| File | Contents |
-|---|---|
-| `arrival_rates_and_load.csv` | Estimated rate and one-guard load ρ per 15-min interval |
-| `proxy_uniformity_test.csv`, `proxy_dispersion_by_slot.csv` | Tests of the Poisson-arrival assumption on the SFpark data |
-| `verification_checks.csv` | V1–V13: hand traces, D/D/1, conservation, sanity, FIFO, Little's law, guard-2 closing, CRN, M/M/1 and M/G/1 known answers, Lindley recursion, two-station hand trace, equivalences, throughput bound |
-| `replication_planning.csv` | Week 7 replications-needed calculation, pilot and final *n* |
-| `replications_raw.csv` | Every measure for every replication and configuration (headline *n*) |
-| `summary_by_config.csv` | Mean, SD, SE and 95% CI per measure per configuration, with guard-hours |
-| `paired_differences.csv` | Paired-t CIs for B−A, C−A and C−B, with a Bonferroni column and the extra guard-hours |
-| `spillover_probability.csv` | Monte Carlo estimate of P(a high-traffic day has spillover), Wilson CI |
-| `queue_profile_by_interval.csv` | Mean and 95th-percentile queue per 15 min |
-| `stress_test.csv`, `headroom_by_K.csv` | Demand ×1 to ×5 for all configurations; the first multiple with P(spillover day) ≥ 10%, for K from 5 to 12 |
-| `fluid_step_size.csv`, `fluid_vs_des.csv` | Euler vs RK4 step-size test; fluid model against the DES at demand ×3 |
-| `validation_checks.csv` | Face validity, extreme conditions, published ranges |
-| `demand_scenarios.csv`, `sensitivity_demand_processing.csv`, `sensitivity_by_config.csv` | Demand ×0.8 / 1.0 / 1.2 × processing time ×0.8 / 1.0 / 1.2 |
-| `sensitivity_distribution.csv`, `sensitivity_K.csv` | Lognormal vs gamma vs exponential; K from 5 to 12 |
-| `evidence_summary.csv` | The five kinds of evidence a credible study reports |
+To refresh the working notebook and generated files after a passing run:
+
+```bash
+uv run --locked python Group8_Parking_Booth_Simulation/tools/verify_notebook.py --publish
+```
+
+Previous generated exports are preserved under `archive/pre-presentation/`.
+Publication is a local copy operation; it does not push or submit anything.
+
+For interactive Jupyter, start from the repository root:
+
+```bash
+uv run --locked jupyter lab Group8_Parking_Booth_Simulation/Parking_Booth_Simulation.ipynb
+```
+
+Choose the project's Python 3.12 environment. In VS Code, select
+`.venv/bin/python` on Linux or `.venv\\Scripts\\python.exe` on Windows.
+Use Restart Kernel and Run All Cells. The notebook runs from its own folder.
+It produces `results/` and `figures/` and reads inputs without
+rewriting them. No automatic package install or public-data download occurs.
+
+For the 30-day normal-demand CLI baseline:
+
+```bash
+cd Group8_Parking_Booth_Simulation
+uv run --locked python parking_sim.py
+```
+
+The CLI is a smaller experiment. It does not replace full notebook verification.
+
+## Files and evidence
+
+| Path | Purpose |
+| --- | --- |
+| `Parking_Booth_Simulation.ipynb` | Study question, entrance, inputs, checks, precision planning, morning results, two separate sensitivity tests, and interpretation. |
+| `parking_sim.py` | SimPy model, input loading, random streams, measures, and analysis helpers. |
+| `data/input_parameters.csv` | Estimated activity moments, refusal share, and K, with basis and source. |
+| `data/arrival_rates.csv` | Estimated hourly rates in all 48 fifteen-minute slots. |
+| `results/verification_checks.csv` | Check names, expected and observed outcomes, and pass flags. |
+| `results/replications_raw.csv` | Final replication output for every seed, schedule, and demand level. |
+| `results/summary_by_config.csv` | Means, SDs, 95% t intervals, units, n, and scheduled guard-hours for all nine combinations. |
+| `results/paired_differences.csv` | Alternative-minus-baseline differences, paired intervals, and Bonferroni intervals. |
+| `results/replication_planning.csv`, `replication_followup.csv` | Pilot requirements and final achieved precision. |
+| `results/spillover_probability.csv` | Spillover-day counts and Wilson intervals. Zero observed days do not imply zero risk. |
+| `results/initial_wait_and_guard_hours.csv` | Initial waiting distinguished from total delay, plus effective guard-hours. |
+| `results/supplementary_summary.csv`, `supplementary_paired_differences.csv` | Morning delay, initial waiting, and effective guard-hours with SDs, n, and confidence intervals. |
+| `results/activity_replications_raw.csv`, `activity_sensitivity.csv`, `activity_paired_differences.csv` | Activities scaled to 80%, 100%, and 120% at normal arrivals, with matching days and interval statistics. |
+| `results/activity_replication_planning.csv` | Achieved timing-test precision. Normal activity cases reuse the main experiment when n matches. |
+| `results/input_provenance.csv` | Known input origins and missing justification. |
+| `results/demand_scenarios.csv` | The required demand comparison, keeping other inputs fixed. |
+| `results/extreme_conditions.csv` | Additional low-demand, high-demand, and slow-reader cases. |
+| `presentation/Parking_Study_Report.pdf` | Study report in PDF format. |
+| `presentation/Parking_Study_Presentation.pdf` | Presentation of the study question, method, evidence, and limitations. |
+| `presentation/talk-track.md` | Speaker notes and explanations of the study. |
+| `tools/verify_notebook.py` | Read-only doctor, isolated Run All, output checks, evidence, and optional local publication. |
+| `tools/build_presentation.py` | Figure and document rendering functions. |
+| `tools/build_arrival_proxy.py` | Retained optional SFpark downloader. Not required or run for this study. |
+| `archive/pre-presentation/` | Historical booth-study exports. Do not use them as current results. |
+
+The notebook also saves a conceptual-model diagram, arrival profile, queue
+profile, normal-demand comparison, and demand-sensitivity figure. It also saves
+morning and activity-time comparison figures.
+
+## Interpretation
+
+Total delay is elapsed time minus the car's own activity time. Initial waiting
+is time before the first sticker check. Guard utilization includes active checks
+and refusals, not all reader or stop occupancy. K = 8 defines spillover at a
+queue count of at least eight, including the pre-check position.
+
+A fractional mean maximum queue averages integer daily maxima. An error bar
+describes uncertainty about a simulated mean, not a prediction band for each
+day. Estimated inputs and the unconfirmed layout remain separate limitations.
+
+Arrival sensitivity changes demand only. Activity sensitivity changes all four
+activity times together at normal demand. It scales their means and SDs, while
+preserving distribution shapes. Refusal share, K, and entrance rules stay fixed.
+
+Optional proxy tests and the fluid approximation remain available in the model
+code but are outside the notebook's evidence.
+
+The uv lockfile records tested packages. Keep `.venv` out of Git. Recreate the
+environment on another machine rather than copying it. The local workflow is
+the tested reproduction path; a Colab session needs its own dependencies and
+the notebook's working folder before running.
